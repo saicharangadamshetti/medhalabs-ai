@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real Estate Voice Agent Testing</title>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0f0f0; }
+    h1 { margin-bottom: 2rem; }
+    .controls { display: flex; gap: 1rem; margin-bottom: 2rem; }
+    button { padding: 1rem 2rem; font-size: 1.2rem; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; }
+    .btn-openai { background: #10a37f; color: white; }
+    .btn-gemini { background: #4285F4; color: white; }
+    .btn-stop { background: #ea4335; color: white; display: none; }
+    #status { font-size: 1.2rem; margin-top: 1rem; font-weight: bold; color: #333; }
+  </style>
+</head>
+<body>
+  <h1>Voice Agent Test Console</h1>
+  <div class="controls">
+    <button id="startOpenAI" class="btn-openai">Start OpenAI Flow</button>
+    <button id="startGemini" class="btn-gemini">Start Gemini Flow</button>
+    <button id="stopBtn" class="btn-stop">Stop Connection</button>
+  </div>
+  <div id="status">Disconnected</div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
