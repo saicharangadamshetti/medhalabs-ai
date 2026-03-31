@@ -1,0 +1,107 @@
+{
+ "Resources": {
+  "SharedALBFB0368B1": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::ImportValue": "medhalabs-voice-backend-in-vpc:ExportsOutputFnGetAttSharedAlbSG7736BD92GroupIdA39EE71C"
+     }
+    ],
+    "Subnets": [
+     {
+      "Fn::ImportValue": "medhalabs-voice-backend-in-vpc:ExportsOutputRefSharedVpcPublicSubnet1SubnetE66A2D86D48F555F"
+     },
+     {
+      "Fn::ImportValue": "medhalabs-voice-backend-in-vpc:ExportsOutputRefSharedVpcPublicSubnet2SubnetE33911D4F1E390C6"
+     }
+    ],
+    "Type": "application"
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-in-alb/SharedALB/Resource"
+   }
+  },
+  "SharedALBSharedListenerE94406C6": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Fn::ImportValue": "medhalabs-voice-backend-in-backend:ExportsOutputRefVoiceAgentTargetGroup8E083B3C9FDE78E0"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "SharedALBFB0368B1"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-in-alb/SharedALB/SharedListener/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WKwQ6CMBBEv4V7WbEePKtXExP8ALOU1SzUlrRbPBD+3aIcNJlk5s2Mhu1+B1WBr1iati8tNzBdBU2vcnUji1HYWI9tgxadYfcYNUyHYbBsUNi7c96On42COt3/+ffHUcitnzXPC1ySDEmWVFP0KRialfMtQRc3o9aQVRVdZC5DcsJPgvrrbxEyV3m8AAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-in-alb/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "AlbDnsName": {
+   "Value": {
+    "Fn::GetAtt": [
+     "SharedALBFB0368B1",
+     "DNSName"
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

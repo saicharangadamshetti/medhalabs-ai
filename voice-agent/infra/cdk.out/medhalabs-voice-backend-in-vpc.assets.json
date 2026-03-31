@@ -1,0 +1,20 @@
+{
+  "version": "38.0.1",
+  "files": {
+    "3e485ebdf2c9328204d36a68a8d4ea02cda1521e9c494657cb7b031ad7ac9809": {
+      "source": {
+        "path": "medhalabs-voice-backend-in-vpc.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "470362823291-ap-south-1": {
+          "bucketName": "cdk-hnb659fds-assets-470362823291-ap-south-1",
+          "objectKey": "3e485ebdf2c9328204d36a68a8d4ea02cda1521e9c494657cb7b031ad7ac9809.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-file-publishing-role-470362823291-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

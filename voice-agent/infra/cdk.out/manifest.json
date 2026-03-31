@@ -1,0 +1,396 @@
+{
+  "version": "38.0.1",
+  "artifacts": {
+    "medhalabs-voice-backend-in-vpc.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "medhalabs-voice-backend-in-vpc.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "medhalabs-voice-backend-in-vpc": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://470362823291/ap-south-1",
+      "properties": {
+        "templateFile": "medhalabs-voice-backend-in-vpc.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-deploy-role-470362823291-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-cfn-exec-role-470362823291-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/3e485ebdf2c9328204d36a68a8d4ea02cda1521e9c494657cb7b031ad7ac9809.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "medhalabs-voice-backend-in-vpc.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-lookup-role-470362823291-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "medhalabs-voice-backend-in-vpc.assets"
+      ],
+      "metadata": {
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpc96F0F614"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet1SubnetE66A2D86"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet1RouteTableB2E560ED"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet1RouteTableAssociationD4F9EC47"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet1DefaultRoute57DB288E"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet2SubnetE33911D4"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet2RouteTableF58D8939"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet2RouteTableAssociationAFAB5570"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcPublicSubnet2DefaultRouteD5FF70D7"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcIGW869E5885"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedVpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedVpcVPCGW9C69B7A5"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/SharedAlbSG/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedAlbSG7736BD92"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/Exports/Output{\"Ref\":\"SharedVpc96F0F614\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefSharedVpc96F0F6140AE947C7"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/Exports/Output{\"Fn::GetAtt\":[\"SharedAlbSG7736BD92\",\"GroupId\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttSharedAlbSG7736BD92GroupIdA39EE71C"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/Exports/Output{\"Ref\":\"SharedVpcPublicSubnet1SubnetE66A2D86\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefSharedVpcPublicSubnet1SubnetE66A2D86D48F555F"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/Exports/Output{\"Ref\":\"SharedVpcPublicSubnet2SubnetE33911D4\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefSharedVpcPublicSubnet2SubnetE33911D4F1E390C6"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/medhalabs-voice-backend-in-vpc/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "medhalabs-voice-backend-in-vpc"
+    },
+    "medhalabs-voice-backend-in-backend.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "medhalabs-voice-backend-in-backend.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "medhalabs-voice-backend-in-backend": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://470362823291/ap-south-1",
+      "properties": {
+        "templateFile": "medhalabs-voice-backend-in-backend.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-deploy-role-470362823291-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-cfn-exec-role-470362823291-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/f347d6b7ef2a4f8b7cb660d92dbbc1c47fc8f6ebf10acee7dc2081453e87416c.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "medhalabs-voice-backend-in-backend.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-lookup-role-470362823291-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "medhalabs-voice-backend-in-vpc",
+        "medhalabs-voice-backend-in-backend.assets"
+      ],
+      "metadata": {
+        "/medhalabs-voice-backend-in-backend/VoiceAgentEc2SG/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentEc2SGD1F9D666"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentEc2SG/from medhalabsvoicebackendinvpcSharedAlbSGC5116562:3001": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentEc2SGfrommedhalabsvoicebackendinvpcSharedAlbSGC5116562300123BBA8A7"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentInstanceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentInstanceRoleDF44F7F0"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentInstanceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentInstanceRoleDefaultPolicy1C359172"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentLogGroup487A7AE4"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentLaunchTemplate/Profile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentLaunchTemplateProfile03874C67"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentLaunchTemplate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentLaunchTemplate5322E614"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentASG": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "desiredCapacity has been configured. Be aware this will reset the size of your AutoScalingGroup on every deployment. See https://github.com/aws/aws-cdk/issues/5215 [ack: @aws-cdk/aws-autoscaling:desiredCapacitySet]",
+            "trace": [
+              "Annotations.addMessage (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1608)",
+              "Annotations.addWarningV2 (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:825)",
+              "new AutoScalingGroup (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/aws-cdk-lib/aws-autoscaling/lib/auto-scaling-group.js:1:16415)",
+              "new VoiceAgentEc2Stack (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/lib/ec2-stack.ts:113:17)",
+              "Object.<anonymous> (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/bin/main.ts:24:18)",
+              "Module._compile (node:internal/modules/cjs/loader:1706:14)",
+              "Module.m._compile (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/ts-node/src/index.ts:1618:23)",
+              "Module._extensions..js (node:internal/modules/cjs/loader:1839:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/ts-node/src/index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1441:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1263:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:237:24)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)",
+              "phase4 (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/ts-node/src/bin.ts:649:14)",
+              "bootstrap (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/ts-node/src/bin.ts:95:10)",
+              "main (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/ts-node/src/bin.ts:55:10)",
+              "Object.<anonymous> (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/ts-node/src/bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1706:14)",
+              "Object.Module._extensions..js (node:internal/modules/cjs/loader:1839:10)",
+              "Module.load (node:internal/modules/cjs/loader:1441:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1263:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:237:24)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)",
+              "node:internal/main/run_main_module:36:49"
+            ]
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentASG/ASG": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentASG6CC72B5C"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/VoiceAgentTargetGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VoiceAgentTargetGroup8E083B3C"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/LogGroupNameOutput": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogGroupNameOutput"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/Exports/Output{\"Ref\":\"VoiceAgentTargetGroup8E083B3C\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefVoiceAgentTargetGroup8E083B3C9FDE78E0"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/medhalabs-voice-backend-in-backend/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "medhalabs-voice-backend-in-backend"
+    },
+    "medhalabs-voice-backend-in-alb.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "medhalabs-voice-backend-in-alb.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "medhalabs-voice-backend-in-alb": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://470362823291/ap-south-1",
+      "properties": {
+        "templateFile": "medhalabs-voice-backend-in-alb.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-deploy-role-470362823291-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-cfn-exec-role-470362823291-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/c43da1bf27017be392e0cf9612096963ea234171d8f19756a3ece4556a5ed838.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "medhalabs-voice-backend-in-alb.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-lookup-role-470362823291-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "medhalabs-voice-backend-in-vpc",
+        "medhalabs-voice-backend-in-backend",
+        "medhalabs-voice-backend-in-alb.assets"
+      ],
+      "metadata": {
+        "/medhalabs-voice-backend-in-alb/SharedALB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedALBFB0368B1"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/SharedALB/SharedListener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedALBSharedListenerE94406C6"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/AlbDnsName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlbDnsName"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "medhalabs-voice-backend-in-alb"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

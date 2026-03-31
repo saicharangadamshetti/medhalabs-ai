@@ -1,0 +1,312 @@
+{
+ "Resources": {
+  "SharedVpc96F0F614": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "medhalabs-voice-backend-us-vpc/SharedVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/Resource"
+   }
+  },
+  "SharedVpcPublicSubnet1SubnetE66A2D86": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SharedVpc96F0F614"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet1/Subnet"
+   }
+  },
+  "SharedVpcPublicSubnet1RouteTableB2E560ED": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SharedVpc96F0F614"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet1/RouteTable"
+   }
+  },
+  "SharedVpcPublicSubnet1RouteTableAssociationD4F9EC47": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "SharedVpcPublicSubnet1RouteTableB2E560ED"
+    },
+    "SubnetId": {
+     "Ref": "SharedVpcPublicSubnet1SubnetE66A2D86"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "SharedVpcPublicSubnet1DefaultRoute57DB288E": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "SharedVpcIGW869E5885"
+    },
+    "RouteTableId": {
+     "Ref": "SharedVpcPublicSubnet1RouteTableB2E560ED"
+    }
+   },
+   "DependsOn": [
+    "SharedVpcVPCGW9C69B7A5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "SharedVpcPublicSubnet2SubnetE33911D4": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SharedVpc96F0F614"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet2/Subnet"
+   }
+  },
+  "SharedVpcPublicSubnet2RouteTableF58D8939": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "SharedVpc96F0F614"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet2/RouteTable"
+   }
+  },
+  "SharedVpcPublicSubnet2RouteTableAssociationAFAB5570": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "SharedVpcPublicSubnet2RouteTableF58D8939"
+    },
+    "SubnetId": {
+     "Ref": "SharedVpcPublicSubnet2SubnetE33911D4"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "SharedVpcPublicSubnet2DefaultRouteD5FF70D7": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "SharedVpcIGW869E5885"
+    },
+    "RouteTableId": {
+     "Ref": "SharedVpcPublicSubnet2RouteTableF58D8939"
+    }
+   },
+   "DependsOn": [
+    "SharedVpcVPCGW9C69B7A5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "SharedVpcIGW869E5885": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "medhalabs-voice-backend-us-vpc/SharedVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/IGW"
+   }
+  },
+  "SharedVpcVPCGW9C69B7A5": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "SharedVpcIGW869E5885"
+    },
+    "VpcId": {
+     "Ref": "SharedVpc96F0F614"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedVpc/VPCGW"
+   }
+  },
+  "SharedAlbSG7736BD92": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Public access for Shared ALB",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow HTTP traffic",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "VpcId": {
+     "Ref": "SharedVpc96F0F614"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/SharedAlbSG/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OzQ6CMBCEn8V7qVgPngkH4o2A4WpKWWP5aUm7lRDCu1sQxWSTnfky2VlGT5czDQ98sIGomqCVJZ1y5KIhHt1BMDoVvSDxQxVpTFJXtlLkrlSAC9tVph3CjZct7HxnkbVaSI5Sq194EVeFYHwy4QgDH7eazUXo/3h2oJDkIJyROCZGu34t+AczycBqZ8R686tnonQFtLbHF2PUT3iorZSBcQplBzT77Dcm8aMTAgEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-vpc/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputRefSharedVpc96F0F6140AE947C7": {
+   "Value": {
+    "Ref": "SharedVpc96F0F614"
+   },
+   "Export": {
+    "Name": "medhalabs-voice-backend-us-vpc:ExportsOutputRefSharedVpc96F0F6140AE947C7"
+   }
+  },
+  "ExportsOutputFnGetAttSharedAlbSG7736BD92GroupIdA39EE71C": {
+   "Value": {
+    "Fn::GetAtt": [
+     "SharedAlbSG7736BD92",
+     "GroupId"
+    ]
+   },
+   "Export": {
+    "Name": "medhalabs-voice-backend-us-vpc:ExportsOutputFnGetAttSharedAlbSG7736BD92GroupIdA39EE71C"
+   }
+  },
+  "ExportsOutputRefSharedVpcPublicSubnet1SubnetE66A2D86D48F555F": {
+   "Value": {
+    "Ref": "SharedVpcPublicSubnet1SubnetE66A2D86"
+   },
+   "Export": {
+    "Name": "medhalabs-voice-backend-us-vpc:ExportsOutputRefSharedVpcPublicSubnet1SubnetE66A2D86D48F555F"
+   }
+  },
+  "ExportsOutputRefSharedVpcPublicSubnet2SubnetE33911D4F1E390C6": {
+   "Value": {
+    "Ref": "SharedVpcPublicSubnet2SubnetE33911D4"
+   },
+   "Export": {
+    "Name": "medhalabs-voice-backend-us-vpc:ExportsOutputRefSharedVpcPublicSubnet2SubnetE33911D4F1E390C6"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

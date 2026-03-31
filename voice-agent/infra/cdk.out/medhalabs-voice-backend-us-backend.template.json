@@ -1,0 +1,279 @@
+{
+ "Resources": {
+  "VoiceAgentEc2SGD1F9D666": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Restricted access for Backend Instances",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow SSH access",
+      "FromPort": 22,
+      "IpProtocol": "tcp",
+      "ToPort": 22
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "medhalabs-voice-backend-us-vpc:ExportsOutputRefSharedVpc96F0F6140AE947C7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentEc2SG/Resource"
+   }
+  },
+  "VoiceAgentEc2SGfrommedhalabsvoicebackendusvpcSharedAlbSG618572D730013D4A37C1": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Allow traffic from ALB",
+    "FromPort": 3001,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "VoiceAgentEc2SGD1F9D666",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::ImportValue": "medhalabs-voice-backend-us-vpc:ExportsOutputFnGetAttSharedAlbSG7736BD92GroupIdA39EE71C"
+    },
+    "ToPort": 3001
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentEc2SG/from medhalabsvoicebackendusvpcSharedAlbSG618572D7:3001"
+   }
+  },
+  "VoiceAgentInstanceRoleDF44F7F0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/CloudWatchAgentServerPolicy"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentInstanceRole/Resource"
+   }
+  },
+  "VoiceAgentLogGroup487A7AE4": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/ec2/medhalabs-voice-backend-us/backend",
+    "RetentionInDays": 7
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentLogGroup/Resource"
+   }
+  },
+  "VoiceAgentASGInstanceProfile94759A67": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "VoiceAgentInstanceRoleDF44F7F0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentASG/InstanceProfile"
+   }
+  },
+  "VoiceAgentASGLaunchConfig4D90EF63": {
+   "Type": "AWS::AutoScaling::LaunchConfiguration",
+   "Properties": {
+    "IamInstanceProfile": {
+     "Ref": "VoiceAgentASGInstanceProfile94759A67"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t3.small",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "VoiceAgentEc2SGD1F9D666",
+       "GroupId"
+      ]
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\n# Bootstrap\ndnf update -y\ndnf install -y git\ncurl -fsSL https://rpm.nodesource.com/setup_20.x | bash -\ndnf install -y nodejs\nnpm install -g pm2\nmkdir -p /home/ec2-user/app\nchown -R ec2-user:ec2-user /home/ec2-user/app"
+    }
+   },
+   "DependsOn": [
+    "VoiceAgentInstanceRoleDF44F7F0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentASG/LaunchConfig"
+   }
+  },
+  "VoiceAgentASG6CC72B5C": {
+   "Type": "AWS::AutoScaling::AutoScalingGroup",
+   "Properties": {
+    "DesiredCapacity": "1",
+    "LaunchConfigurationName": {
+     "Ref": "VoiceAgentASGLaunchConfig4D90EF63"
+    },
+    "MaxSize": "2",
+    "MinSize": "1",
+    "Tags": [
+     {
+      "Key": "Name",
+      "PropagateAtLaunch": true,
+      "Value": "medhalabs-voice-backend-us-backend/VoiceAgentASG"
+     }
+    ],
+    "TargetGroupARNs": [
+     {
+      "Ref": "VoiceAgentTargetGroup8E083B3C"
+     }
+    ],
+    "VPCZoneIdentifier": [
+     {
+      "Fn::ImportValue": "medhalabs-voice-backend-us-vpc:ExportsOutputRefSharedVpcPublicSubnet1SubnetE66A2D86D48F555F"
+     },
+     {
+      "Fn::ImportValue": "medhalabs-voice-backend-us-vpc:ExportsOutputRefSharedVpcPublicSubnet2SubnetE33911D4F1E390C6"
+     }
+    ]
+   },
+   "UpdatePolicy": {
+    "AutoScalingScheduledAction": {
+     "IgnoreUnmodifiedGroupSizeProperties": true
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentASG/ASG"
+   }
+  },
+  "VoiceAgentTargetGroup8E083B3C": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "HealthCheckIntervalSeconds": 30,
+    "HealthCheckPath": "/",
+    "HealthCheckPort": "3001",
+    "HealthyThresholdCount": 2,
+    "Port": 3001,
+    "Protocol": "HTTP",
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "instance",
+    "UnhealthyThresholdCount": 5,
+    "VpcId": {
+     "Fn::ImportValue": "medhalabs-voice-backend-us-vpc:ExportsOutputRefSharedVpc96F0F6140AE947C7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/VoiceAgentTargetGroup/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/32PQWvDMAyFf0vvjtdlh51LD6MwWEl7H6qjeGodK9hyywj+73PStRs7DAzy9/Qk9Gr9+Pyklwu4xMq0p8rRQY87AXNSRXof0dSF0aRA8vkSOA1q3fn/hY23AWPMiqDXY8MOJ8utbnwU8Aa3gTtymJVjG/X4yva+7fbPCpJwNODIWz2uCuyu8GOF5M3Hmn1HNgUQYj/Jf61ZoYMoZBxDewBXDiitc8m2GgZHZh7cQ7Ao99W/MGfVYOQUzBxhCwF6FAwTvCUZkswJvy1ZeW5RH+PDua51ecvFMRJVIXmhHnVzrV/jakr8ewEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "medhalabs-voice-backend-us-backend/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Outputs": {
+  "LogGroupNameOutput": {
+   "Value": {
+    "Ref": "VoiceAgentLogGroup487A7AE4"
+   }
+  },
+  "ExportsOutputRefVoiceAgentTargetGroup8E083B3C9FDE78E0": {
+   "Value": {
+    "Ref": "VoiceAgentTargetGroup8E083B3C"
+   },
+   "Export": {
+    "Name": "medhalabs-voice-backend-us-backend:ExportsOutputRefVoiceAgentTargetGroup8E083B3C9FDE78E0"
+   }
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
