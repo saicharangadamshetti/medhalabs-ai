@@ -50,7 +50,9 @@ const startConnection = async (type) => {
   
   setStatus(`Connecting to ${type} flow...`);
   
-  ws = new WebSocket(`ws://localhost:${location.port || 3001}/${type}`);
+  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  const host = window.location.host || 'localhost:3001';
+  ws = new WebSocket(`${protocol}://${host}/${type}`);
   
   ws.onopen = async () => {
     setStatus(`Connected to ${type}. Starting mic...`);

@@ -79,6 +79,7 @@ export class VoiceAgentEc2Stack extends cdk.Stack {
       'NODE_ENV=production',
       'PORT=3001',
       `GEMINI_API_KEY=$GEMINI_API_KEY`,
+      `ALLOWED_ORIGINS=${config.allowedOrigins.join(',')}`,
       'EOF',
 
       '# --- Install Dependencies & Build ---',

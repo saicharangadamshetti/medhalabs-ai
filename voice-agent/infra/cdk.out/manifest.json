@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-deploy-role-470362823291-ap-south-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-cfn-exec-role-470362823291-ap-south-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/3e485ebdf2c9328204d36a68a8d4ea02cda1521e9c494657cb7b031ad7ac9809.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/07b4bb7f1bc1f1a6e315746f7c00e66312fa1488f7862ad46c84658598e8e7fa.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -168,7 +168,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-deploy-role-470362823291-ap-south-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-cfn-exec-role-470362823291-ap-south-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/f347d6b7ef2a4f8b7cb660d92dbbc1c47fc8f6ebf10acee7dc2081453e87416c.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/53f0b0cc5bef8e0b5e6e1c46d8e4539ea3c5a43ff2c792f0473c8195f38a4a06.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -241,7 +241,7 @@
               "Annotations.addMessage (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1608)",
               "Annotations.addWarningV2 (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:825)",
               "new AutoScalingGroup (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/aws-cdk-lib/aws-autoscaling/lib/auto-scaling-group.js:1:16415)",
-              "new VoiceAgentEc2Stack (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/lib/ec2-stack.ts:113:17)",
+              "new VoiceAgentEc2Stack (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/lib/ec2-stack.ts:114:17)",
               "Object.<anonymous> (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/bin/main.ts:24:18)",
               "Module._compile (node:internal/modules/cjs/loader:1706:14)",
               "Module.m._compile (/Users/saicharan/Documents/medhalabs-ai/voice-agent/infra/node_modules/ts-node/src/index.ts:1618:23)",
@@ -329,7 +329,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-deploy-role-470362823291-ap-south-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-cfn-exec-role-470362823291-ap-south-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/c43da1bf27017be392e0cf9612096963ea234171d8f19756a3ece4556a5ed838.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-470362823291-ap-south-1/a8959cdb4c1308ad861bef73d197c99428d4e785dc0781e340d67d502a24bd2c.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -357,6 +357,24 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "SharedALBSharedListenerE94406C6"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/SharedALB/HttpsListener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SharedALBHttpsListener3ED9C30C"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/SiteCertificate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SiteCertificate38C247F6"
+          }
+        ],
+        "/medhalabs-voice-backend-in-alb/AliasRecord/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AliasRecord851000D2"
           }
         ],
         "/medhalabs-voice-backend-in-alb/AlbDnsName": [

@@ -1,7 +1,7 @@
 {
   "version": "38.0.1",
   "files": {
-    "3e485ebdf2c9328204d36a68a8d4ea02cda1521e9c494657cb7b031ad7ac9809": {
+    "07b4bb7f1bc1f1a6e315746f7c00e66312fa1488f7862ad46c84658598e8e7fa": {
       "source": {
         "path": "medhalabs-voice-backend-in-vpc.template.json",
         "packaging": "file"
@@ -9,7 +9,7 @@
       "destinations": {
         "470362823291-ap-south-1": {
           "bucketName": "cdk-hnb659fds-assets-470362823291-ap-south-1",
-          "objectKey": "3e485ebdf2c9328204d36a68a8d4ea02cda1521e9c494657cb7b031ad7ac9809.json",
+          "objectKey": "07b4bb7f1bc1f1a6e315746f7c00e66312fa1488f7862ad46c84658598e8e7fa.json",
           "region": "ap-south-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::470362823291:role/cdk-hnb659fds-file-publishing-role-470362823291-ap-south-1"
         }

@@ -4,7 +4,6 @@ import * as http from 'http';
 import dotenv from 'dotenv';
 import path from 'path';
 
-import { handleOpenAIConnection } from './openai';
 import { handleGenericAgent } from './gemini';
 
 dotenv.config();
@@ -24,10 +23,17 @@ const wss = new WebSocketServer({ server });
 wss.on('connection', (ws, req) => {
   const url = req.url || '';
   const origin = req.headers.origin;
-  
+
   // Basic origin check for production readiness
-  const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:3001', 'https://medha-labs-ai.site'];
-  
+  // Allowed origins from environment variable (CDK injected)
+  const envOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    ...envOrigins
+  ];
+
   if (origin && !allowedOrigins.includes(origin) && process.env.NODE_ENV === 'production') {
     console.warn(`[WS] Blocked connection from unauthorized origin: ${origin}`);
     ws.close();
@@ -36,26 +42,21 @@ wss.on('connection', (ws, req) => {
 
   console.log(`[WS] Incoming connection to ${url} from ${origin}`);
 
-  // Dynamic Routing
-  if (url === '/openai') {
-    handleOpenAIConnection(ws);
-  } else if (url.startsWith('/agent/')) {
-    const agentId = url.split('/').pop() || '';
-    handleGenericAgent(ws, agentId);
-  } else if (url === '/voice-widget-live' || url === '/gemini') {
-    // Backward compatibility for legacy endpoints
-    handleGenericAgent(ws, 'vikas');
-  } else if (url === '/cart-recovery') {
-    handleGenericAgent(ws, 'kartik');
+  // Dynamic Routing: /agent/:domainId/:agentId
+  const parts = url.split('/').filter(Boolean);
+  
+  if (parts.length === 3 && parts[0] === 'agent') {
+    const domainId = parts[1];
+    const agentId = parts[2];
+    handleGenericAgent(ws, domainId, agentId);
   } else {
-    console.warn(`[WS] Unknown path: ${url}`);
-    ws.close();
+    console.warn(`[WS] Unknown path or missing parameters: ${url}`);
+    ws.close(4404, 'Path Not Found');
   }
 });
 
 server.listen(port, () => {
   console.log(`Voice Agent testing server running on http://localhost:${port}`);
   console.log('Available WebSocket endpoints:');
-  console.log(` - ws://localhost:${port}/agent/:id (vikas, kartik, sonali)`);
-  console.log(` - ws://localhost:${port}/openai`);
+  console.log(` - ws://localhost:${port}/agent/:domainId/:agentId`);
 });

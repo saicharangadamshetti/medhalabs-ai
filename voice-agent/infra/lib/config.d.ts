@@ -4,6 +4,9 @@ export interface AppConfig {
     readonly projectName: string;
     readonly instanceType: string;
     readonly vpcCidr: string;
+    readonly domainName?: string;
+    readonly hostedZoneId?: string;
+    readonly allowedOrigins: string[];
 }
 export declare const appConfig: {
     [key: string]: AppConfig;

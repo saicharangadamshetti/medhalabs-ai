@@ -328,6 +328,13 @@
                         "fromPort": 80,
                         "toPort": 80,
                         "description": "Allow HTTP traffic"
+                      },
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "ipProtocol": "tcp",
+                        "fromPort": 443,
+                        "toPort": 443,
+                        "description": "Allow from anyone on port 443"
                       }
                     ],
                     "vpcId": {
@@ -715,7 +722,7 @@
                         }
                       ],
                       "userData": {
-                        "Fn::Base64": "#!/bin/bash\n#!/bin/bash\nset -e\nexec > /var/log/user-data.log 2>&1\n# --- System Setup ---\ndnf update -y\ndnf install -y git\ncurl -fsSL https://rpm.nodesource.com/setup_20.x | bash -\ndnf install -y nodejs\nnpm install -g pm2 typescript\n# --- Fetch Secrets from SSM ---\nGEMINI_API_KEY=$(aws ssm get-parameter --name \"/medhalabs/voice-agent/GEMINI_API_KEY\" --with-decryption --region ap-south-1 --query \"Parameter.Value\" --output text)\n# --- Clone Repository ---\ncd /home/ec2-user\ngit clone https://github.com/saicharangadamshetti/medhalabs-ai.git app || (cd app && git pull)\ncd /home/ec2-user/app/voice-agent\n# --- Write .env file ---\ncat > .env <<EOF\nNODE_ENV=production\nPORT=3001\nGEMINI_API_KEY=$GEMINI_API_KEY\nEOF\n# --- Install Dependencies & Build ---\nnpm install\nnpx tsc --project tsconfig.json || true\n# --- Start App with PM2 ---\npm2 start src/index.js --name voice-agent --env production\npm2 save\n# --- Configure PM2 to start on reboot ---\nenv PATH=$PATH:/usr/bin pm2 startup systemd -u ec2-user --hp /home/ec2-user\nchown -R ec2-user:ec2-user /home/ec2-user\necho \"Bootstrap complete!\""
+                        "Fn::Base64": "#!/bin/bash\n#!/bin/bash\nset -e\nexec > /var/log/user-data.log 2>&1\n# --- System Setup ---\ndnf update -y\ndnf install -y git\ncurl -fsSL https://rpm.nodesource.com/setup_20.x | bash -\ndnf install -y nodejs\nnpm install -g pm2 typescript\n# --- Fetch Secrets from SSM ---\nGEMINI_API_KEY=$(aws ssm get-parameter --name \"/medhalabs/voice-agent/GEMINI_API_KEY\" --with-decryption --region ap-south-1 --query \"Parameter.Value\" --output text)\n# --- Clone Repository ---\ncd /home/ec2-user\ngit clone https://github.com/saicharangadamshetti/medhalabs-ai.git app || (cd app && git pull)\ncd /home/ec2-user/app/voice-agent\n# --- Write .env file ---\ncat > .env <<EOF\nNODE_ENV=production\nPORT=3001\nGEMINI_API_KEY=$GEMINI_API_KEY\nALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://localhost:3001,https://medha-labs-ai.site,https://medha-labs-ai.com,https://www.medha-labs-ai.com\nEOF\n# --- Install Dependencies & Build ---\nnpm install\nnpx tsc --project tsconfig.json || true\n# --- Start App with PM2 ---\npm2 start src/index.js --name voice-agent --env production\npm2 save\n# --- Configure PM2 to start on reboot ---\nenv PATH=$PATH:/usr/bin pm2 startup systemd -u ec2-user --hp /home/ec2-user\nchown -R ec2-user:ec2-user /home/ec2-user\necho \"Bootstrap complete!\""
                       }
                     },
                     "tagSpecifications": [
@@ -968,9 +975,11 @@
                       "aws:cdk:cloudformation:props": {
                         "defaultActions": [
                           {
-                            "type": "forward",
-                            "targetGroupArn": {
-                              "Fn::ImportValue": "medhalabs-voice-backend-in-backend:ExportsOutputRefVoiceAgentTargetGroup8E083B3C9FDE78E0"
+                            "type": "redirect",
+                            "redirectConfig": {
+                              "statusCode": "HTTP_301",
+                              "port": "443",
+                              "protocol": "HTTPS"
                             }
                           }
                         ],
@@ -991,10 +1000,147 @@
                   "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationListener",
                   "version": "2.173.0"
                 }
+              },
+              "HttpsListener": {
+                "id": "HttpsListener",
+                "path": "medhalabs-voice-backend-in-alb/SharedALB/HttpsListener",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "medhalabs-voice-backend-in-alb/SharedALB/HttpsListener/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::Listener",
+                      "aws:cdk:cloudformation:props": {
+                        "certificates": [
+                          {
+                            "certificateArn": {
+                              "Ref": "SiteCertificate38C247F6"
+                            }
+                          }
+                        ],
+                        "defaultActions": [
+                          {
+                            "type": "forward",
+                            "targetGroupArn": {
+                              "Fn::ImportValue": "medhalabs-voice-backend-in-backend:ExportsOutputRefVoiceAgentTargetGroup8E083B3C9FDE78E0"
+                            }
+                          }
+                        ],
+                        "loadBalancerArn": {
+                          "Ref": "SharedALBFB0368B1"
+                        },
+                        "port": 443,
+                        "protocol": "HTTPS",
+                        "sslPolicy": "ELBSecurityPolicy-TLS13-1-2-2021-06"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnListener",
+                      "version": "2.173.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationListener",
+                  "version": "2.173.0"
+                }
               }
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationLoadBalancer",
+              "version": "2.173.0"
+            }
+          },
+          "HostedZone": {
+            "id": "HostedZone",
+            "path": "medhalabs-voice-backend-in-alb/HostedZone",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.173.0"
+            }
+          },
+          "SiteCertificate": {
+            "id": "SiteCertificate",
+            "path": "medhalabs-voice-backend-in-alb/SiteCertificate",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "medhalabs-voice-backend-in-alb/SiteCertificate/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CertificateManager::Certificate",
+                  "aws:cdk:cloudformation:props": {
+                    "domainName": "medha-labs-ai.site",
+                    "domainValidationOptions": [
+                      {
+                        "domainName": "medha-labs-ai.site",
+                        "hostedZoneId": "Z00263211JORPM2EM8Q1S"
+                      }
+                    ],
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "medhalabs-voice-backend-in-alb/SiteCertificate"
+                      }
+                    ],
+                    "validationMethod": "DNS"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_certificatemanager.CfnCertificate",
+                  "version": "2.173.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_certificatemanager.Certificate",
+              "version": "2.173.0"
+            }
+          },
+          "AliasRecord": {
+            "id": "AliasRecord",
+            "path": "medhalabs-voice-backend-in-alb/AliasRecord",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "medhalabs-voice-backend-in-alb/AliasRecord/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Route53::RecordSet",
+                  "aws:cdk:cloudformation:props": {
+                    "aliasTarget": {
+                      "hostedZoneId": {
+                        "Fn::GetAtt": [
+                          "SharedALBFB0368B1",
+                          "CanonicalHostedZoneID"
+                        ]
+                      },
+                      "dnsName": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "dualstack.",
+                            {
+                              "Fn::GetAtt": [
+                                "SharedALBFB0368B1",
+                                "DNSName"
+                              ]
+                            }
+                          ]
+                        ]
+                      }
+                    },
+                    "hostedZoneId": "Z00263211JORPM2EM8Q1S",
+                    "name": "medha-labs-ai.site.",
+                    "type": "A"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_route53.CfnRecordSet",
+                  "version": "2.173.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_route53.ARecord",
               "version": "2.173.0"
             }
           },
