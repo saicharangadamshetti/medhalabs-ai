@@ -84,10 +84,10 @@ export class VoiceAgentEc2Stack extends cdk.Stack {
 
       '# --- Install Dependencies & Build ---',
       'npm install',
-      'npx tsc --project tsconfig.json || true',
+      'npm run build',
 
       '# --- Start App with PM2 ---',
-      'pm2 start src/index.js --name voice-agent --env production',
+      'pm2 start dist/index.js --name voice-agent --env production',
       'pm2 save',
 
       '# --- Configure PM2 to start on reboot ---',
