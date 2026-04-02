@@ -3,7 +3,6 @@ import { cn, getAgentWsUrl } from '@/src/lib/utils';
 import { Play, Building2, Stethoscope, Shield, Utensils, ShoppingBag, Calendar, HeartPulse, Phone, PhoneOff, Loader2, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoiceAgent } from '../hooks/useVoiceAgent';
-import { useTurnBasedVoice } from '../hooks/useTurnBasedVoice';
 
 const categories = [
   { id: 'ecommerce', name: 'E-commerce', icon: ShoppingBag },
@@ -17,7 +16,7 @@ const categories = [
 const agents = {
   'ecommerce': [
     {
-      id: 'kartik',
+      slug: 'service-request',
       name: 'Service Request Agent',
       icon: ShoppingBag,
       role: 'For faulty appliances: verifies warranty, creates tickets, assigns technicians, and sends SMS confirmations instantly.',
@@ -25,7 +24,7 @@ const agents = {
       isRealTime: true
     },
     {
-      id: 'kartik',
+      slug: 'customer-support',
       name: 'Customer Support Agent',
       icon: ShoppingBag,
       role: '24/7 support for product enquiries, orders, refunds, and real-time delivery status tracking.',
@@ -33,7 +32,7 @@ const agents = {
       isRealTime: true
     },
     {
-      id: 'kartik',
+      slug: 'cart-reminder',
       name: 'Cart Reminder Agent',
       icon: ShoppingBag,
       role: 'Nudges customers to complete bookings by reminding them about items left in their cart with personalized incentives.',
@@ -43,23 +42,25 @@ const agents = {
   ],
   'healthcare': [
     {
+      slug: 'appointment-booking',
       name: 'Appointment Booking Agent',
       icon: Calendar,
       role: 'Collects required patient information and streamlines doctor appointment bookings with seamless calendar integration.',
       isLive: true,
-      isTurnBased: true
+      isRealTime: true
     },
     {
+      slug: 'follow-up',
       name: 'Follow Up Agent',
       icon: HeartPulse,
       role: 'Conducts post-treatment check-ins with patients to ensure recovery is on track and addresses any immediate concerns.',
       isLive: true,
-      isTurnBased: true
+      isRealTime: true
     },
   ],
   'edtech': [
     {
-      id: 'sonali',
+      slug: 'lead-qualification',
       name: 'Lead Qualification Agent',
       icon: Calendar,
       role: 'Engages with prospective students to understand learning goals, budget, and preferences to recommend the perfect course fit.',
@@ -69,7 +70,7 @@ const agents = {
   ],
   'bfsi': [
     {
-      id: 'vikas',
+      slug: 'payment-follow-ups',
       name: 'Payment Follow-ups Agent',
       icon: Shield,
       role: 'Gently follows up with customers to recover loan amounts or pending payment dues with a professional and respectful tone.',
@@ -77,15 +78,17 @@ const agents = {
       isRealTime: true
     },
     {
+      slug: 'insurance-claim',
       name: 'Insurance Claim Assistant',
       icon: Shield,
       role: 'Assists customers in initiating claims or providing additional required information to expedite the settlement process.',
-      isLive: false
+      isLive: false,
+      isRealTime: true
     },
   ],
   'hospitality': [
     {
-      id: 'vikas',
+      slug: 'restaurant-front-desk',
       name: 'Restaurant Front Desk Agent',
       icon: Utensils,
       role: 'Answers queries related to reservations, timings, online orders, and handles adhoc enquiries during peak hours.',
@@ -93,15 +96,17 @@ const agents = {
       isRealTime: true
     },
     {
+      slug: 'airlines-booking',
       name: 'Airlines Booking Support',
       icon: ShoppingBag,
       role: 'Provides guided information to book a flight or updates customers on their current booking details with zero latency.',
-      isLive: false
+      isLive: false,
+      isRealTime: true
     },
   ],
   'real-estate': [
     {
-      id: 'vikas',
+      slug: 'lead-qualification',
       name: 'Lead Qualification Agent (Vikas)',
       icon: Building2,
       role: 'Our loyal, enthusiastic sales expert. Vikas knows every property, remembers your preferences, and helps you find your home.',
@@ -113,28 +118,14 @@ const agents = {
 
 export function AgentTabs() {
   const [activeTab, setActiveTab] = useState('healthcare');
-
-  // Real-time flow (Vikas)
   const realTime = useVoiceAgent();
 
-  // Turn-based flow (Dr. Medha)
-  const turnBased = useTurnBasedVoice({
-    url: 'wss://medha-labs-ai.site/voice-widget',
-    agentId: 'medha-hospital'
-  });
-
-  const isAnyCalling = realTime.isCalling || turnBased.isCalling;
-
   const handleCall = (agent: any) => {
-    if (agent.isRealTime) {
-      if (realTime.isCalling) realTime.stop();
-      else {
-        const url = getAgentWsUrl(agent.id);
-        realTime.start('gemini', url);
-      }
-    } else if (agent.isTurnBased) {
-      if (turnBased.isCalling) turnBased.stop();
-      else turnBased.start();
+    if (realTime.isCalling) {
+      realTime.stop();
+    } else if (agent.isLive) {
+      const url = getAgentWsUrl(activeTab, agent.slug);
+      realTime.start('gemini', url);
     }
   };
 
@@ -170,13 +161,13 @@ export function AgentTabs() {
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
-              disabled={isAnyCalling}
+              disabled={realTime.isCalling}
               className={cn(
                 "flex-1 py-3 px-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
                 activeTab === cat.id
                   ? "bg-white shadow-sm text-mint-accent"
                   : "text-slate-500 hover:text-slate-900 text-xs sm:text-[13px]",
-                isAnyCalling && activeTab !== cat.id && "opacity-50 cursor-not-allowed"
+                realTime.isCalling && activeTab !== cat.id && "opacity-50 cursor-not-allowed"
               )}
             >
               <cat.icon className="w-4 h-4 shrink-0" />
@@ -196,9 +187,7 @@ export function AgentTabs() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
           >
             {agents[activeTab as keyof typeof agents].map((agent: any, idx) => {
-              const isActiveRealTime = agent.isRealTime && realTime.isCalling;
-              const isActiveTurnBased = agent.isTurnBased && turnBased.isCalling;
-              const isCurrentActive = isActiveRealTime || isActiveTurnBased;
+              const isCurrentActive = realTime.isCalling && realTime.url?.includes(agent.slug) && realTime.url?.includes(activeTab);
 
               return (
                 <motion.div
@@ -235,7 +224,7 @@ export function AgentTabs() {
 
                     {/* Talk to Agent Button - Primary action */}
                     <button
-                      disabled={isAnyCalling && !isCurrentActive}
+                      disabled={realTime.isCalling && !isCurrentActive}
                       onClick={() => agent.isLive && handleCall(agent)}
                       className={cn(
                         "w-full py-3.5 rounded-full flex items-center justify-center gap-2 transition-all active:scale-95 font-bold text-sm",
@@ -271,33 +260,22 @@ export function AgentTabs() {
                           {[1, 2, 3, 4, 5].map((i) => (
                             <motion.div
                               key={i}
-                              animate={{ height: agent.isRealTime ? [4, 14, 4] : (turnBased.agentState === 'listening' ? [4, 18, 4] : [4, 4, 4]) }}
+                              animate={{ height: [4, 14, 4] }}
                               transition={{ repeat: Infinity, duration: 0.5, delay: i * 0.1 }}
                               className="w-1 bg-mint-accent rounded-full"
                             />
                           ))}
                         </div>
                         <span className="animate-pulse">
-                          {agent.isRealTime
-                            ? (realTime.status === 'connecting' ? 'Establishing link...' : 'Listening...')
-                            : (turnBased.agentState === 'idle' ? 'Ready...' :
-                              turnBased.agentState === 'listening' ? 'Listening...' :
-                                turnBased.agentState === 'thinking' ? 'AI is thinking...' :
-                                  'Speaking...')}
+                          {realTime.status === 'connecting' ? 'Establishing link...' : 
+                           realTime.status === 'not-found' ? 'Error 404: Agent Configuration Not Found' :
+                           'Listening...'}
                         </span>
                       </div>
-
-                      {agent.isTurnBased && turnBased.transcript && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-slate-50/80 p-4 rounded-2xl flex gap-3 border border-slate-100 backdrop-blur-sm"
-                        >
-                          <MessageSquare className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
-                          <p className="text-[11px] text-slate-600 font-medium leading-relaxed italic">
-                            "{turnBased.transcript}"
-                          </p>
-                        </motion.div>
+                      {realTime.status === 'not-found' && (
+                        <p className="text-[10px] text-red-500 text-center mt-2 font-medium">
+                          The requested agent profile is currently unavailable or misconfigured in the backend.
+                        </p>
                       )}
                     </motion.div>
                   )}

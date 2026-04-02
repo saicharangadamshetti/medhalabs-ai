@@ -5,8 +5,7 @@ export type VoiceAgentType = 'openai' | 'gemini';
 export function useVoiceAgent() {
     const [isCalling, setIsCalling] = useState(false);
     const [agentType, setAgentType] = useState<VoiceAgentType | null>(null);
-    const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'error' | 'not-found'>('idle');
-    const [url, setUrl] = useState<string | null>(null);
+    const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'error'>('idle');
 
     const ws = useRef<WebSocket | null>(null);
     const audioContext = useRef<AudioContext | null>(null);
@@ -34,7 +33,6 @@ export function useVoiceAgent() {
         setIsCalling(false);
         setAgentType(null);
         setStatus('idle');
-        setUrl(null);
     }, []);
 
     const playAudio = useCallback((base64Audio: string) => {
@@ -68,29 +66,30 @@ export function useVoiceAgent() {
                 nextPlayTime.current = audioContext.current.currentTime;
             }
 
-
             source.start(nextPlayTime.current);
             nextPlayTime.current += buffer.duration;
         } catch (e) {
-            console.warn('[useVoiceAgent] Playback error:', e);
+            console.warn('Failed to play audio chunk', e);
         }
     }, []);
 
-    const start = useCallback(async (type: VoiceAgentType, customUrl: string) => {
+    const start = useCallback(async (type: VoiceAgentType, customUrl?: string) => {
         if (isCalling) return;
 
         setIsCalling(true);
         setAgentType(type);
         setStatus('connecting');
 
-        const wsUrl = customUrl;
-        setUrl(wsUrl);
+        // Default to production Gemini Live (Vikas) unless a custom URL is provided
+        const wsUrl = customUrl || 'wss://medha-labs-ai.site/agent/vikas';
 
-        console.log(`[useVoiceAgent] Connecting to: ${wsUrl}`);
         ws.current = new WebSocket(wsUrl);
 
         ws.current.onopen = async () => {
             setStatus('connected');
+            console.log('[RealTime] Connection established. Sending start message.');
+            ws.current?.send(JSON.stringify({ type: 'start' }));
+
             audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             nextPlayTime.current = audioContext.current.currentTime;
 
@@ -117,7 +116,7 @@ export function useVoiceAgent() {
                     ws.current.send(JSON.stringify({ type: 'audio', audio: base64 }));
                 };
             } catch (err) {
-                console.error('[useVoiceAgent] MIC ERROR:', err);
+                console.error('Mic access error', err);
                 setStatus('error');
                 cleanup();
             }
@@ -126,24 +125,18 @@ export function useVoiceAgent() {
         ws.current.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-
-                // 1. Handle Audio Playback
                 if (data.type === 'audio' && data.audio) {
+                    // Summary log to avoid flooding
+                    if (Math.random() < 0.01) console.log('[RealTime] Receiving audio data...');
                     playAudio(data.audio);
                 }
-
-                // 2. Handle Handshake Errors (404/not-found)
-                if (data.type === 'error' && data.code === 4404) {
-                    setStatus('not-found');
-                }
             } catch (e) {
-                console.warn('[useVoiceAgent] Message parse error:', e);
+                console.warn('Error parsing WS message', e);
             }
         };
 
-        ws.current.onclose = (e) => {
-            if (e.code === 4404) setStatus('not-found');
-            else cleanup();
+        ws.current.onclose = () => {
+            cleanup();
         };
 
         ws.current.onerror = () => {
@@ -156,5 +149,5 @@ export function useVoiceAgent() {
         return () => cleanup();
     }, [cleanup]);
 
-    return { isCalling, agentType, status, url, start, stop: cleanup };
+    return { isCalling, agentType, status, start, stop: cleanup };
 }

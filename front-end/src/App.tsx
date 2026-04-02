@@ -19,7 +19,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      
+
       {currentPage === 'home' ? (
         <main className="flex-grow">
           <Hero />
@@ -40,8 +40,8 @@ export default function App() {
           onClick={() => setIsDemoMode(!isDemoMode)}
           className={`
             flex items-center gap-3 px-6 py-3 rounded-full font-bold text-sm shadow-2xl transition-all
-            ${isDemoMode 
-              ? 'bg-slate-900 text-white' 
+            ${isDemoMode
+              ? 'bg-slate-900 text-white'
               : 'bg-white text-slate-900 border border-slate-200 hover:bg-slate-50'}
           `}
         >
@@ -64,8 +64,8 @@ export default function App() {
                 <a className="text-2xl font-bold tracking-tighter text-slate-900 flex items-center gap-2 mb-6" href="#">
                   <img
                     alt="MedhaLabs AI Logo"
-                    className="w-8 h-8 object-contain"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCh0W8DwJC7a89OZ8k96ld54qlKO5vychcMnWjTE4KLyip46HtWSb2qyF0PYxXHjce45MyTEW967gOmjhhpn8wm_JmDC1S0rf5Hyva5HQFkjVV8O7iNEplEkWVlfMJVSpLfsp8kNuyBn2PQ6OTpweUYArILroXNzB1Em5GYFUDnVydHj9XxMKE6j5-TJ6IiODqTnURzlJIzzr1SXi6rhtgX7qPclf-b21roo8HpsrvgbeWYasm8SxG2K3QF0RRAr4IVuSblnMFS2-I"
+                    className="w-[72px] h-[72px] object-contain"
+                    src="https://i.ibb.co/KdksNvG/logo-removebg-preview.png"
                   />
                   MedhaLabs AI
                 </a>
@@ -99,7 +99,7 @@ export default function App() {
                       type="email"
                     />
                     <button className="bg-mint text-white p-2 rounded-full hover:scale-110 transition-transform">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                     </button>
                   </div>
                 </div>

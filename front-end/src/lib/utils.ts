@@ -5,9 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getAgentWsUrl(agentId: string) {
+export function getAgentWsUrl(domainId: string, agentId: string) {
   const isLocal = window.location.hostname === 'localhost';
-  const protocol = isLocal ? 'ws' : 'wss';
-  const host = isLocal ? 'localhost:3001' : 'medha-labs-ai.site';
-  return `${protocol}://${host}/agent/${agentId}`;
+  const baseUrl = isLocal ? 'ws://localhost:3001' : 'wss://medha-labs-ai.site';
+  return `${baseUrl}/agent/${domainId}/${agentId}`;
 }

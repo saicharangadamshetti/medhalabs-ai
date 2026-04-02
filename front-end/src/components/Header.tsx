@@ -31,8 +31,8 @@ export function Header({ currentPage = 'home', setCurrentPage }: { currentPage?:
         >
           <img
             alt="MedhaLabs AI Logo"
-            className="w-8 h-8 object-contain"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCh0W8DwJC7a89OZ8k96ld54qlKO5vychcMnWjTE4KLyip46HtWSb2qyF0PYxXHjce45MyTEW967gOmjhhpn8wm_JmDC1S0rf5Hyva5HQFkjVV8O7iNEplEkWVlfMJVSpLfsp8kNuyBn2PQ6OTpweUYArILroXNzB1Em5GYFUDnVydHj9XxMKE6j5-TJ6IiODqTnURzlJIzzr1SXi6rhtgX7qPclf-b21roo8HpsrvgbeWYasm8SxG2K3QF0RRAr4IVuSblnMFS2-I"
+            className="w-[72px] h-[72px] object-contain"
+            src="https://i.ibb.co/KdksNvG/logo-removebg-preview.png"
           />
           MedhaLabs AI
         </a>
