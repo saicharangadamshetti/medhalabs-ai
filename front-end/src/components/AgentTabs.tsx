@@ -16,26 +16,26 @@ const categories = [
 const agents = {
   'ecommerce': [
     {
-      slug: 'service-request',
-      name: 'Service Request Agent',
+      slug: 'cart-reminder',
+      name: 'Vikram – Cart Recovery Specialist',
       icon: ShoppingBag,
-      role: 'For faulty appliances: verifies warranty, creates tickets, assigns technicians, and sends SMS confirmations instantly.',
+      role: 'Reaches out to customers with abandoned carts to offer timely discounts and support to recover lost sales.',
       isLive: true,
       isRealTime: true
     },
     {
       slug: 'customer-support',
-      name: 'Customer Support Agent',
+      name: 'Ananya – E-Commerce Support Expert',
       icon: ShoppingBag,
-      role: '24/7 support for product enquiries, orders, refunds, and real-time delivery status tracking.',
+      role: 'Provides 24/7 support for product orders, troubleshooting issues like leakages or delivery delays.',
       isLive: true,
       isRealTime: true
     },
     {
-      slug: 'cart-reminder',
-      name: 'Cart Reminder Agent',
+      slug: 'service-request',
+      name: 'Aditi – Service Solutions Coordinator',
       icon: ShoppingBag,
-      role: 'Nudges customers to complete bookings by reminding them about items left in their cart with personalized incentives.',
+      role: 'Manages household service requests and technician scheduling for water purifier maintenance.',
       isLive: true,
       isRealTime: true
     },
@@ -43,17 +43,9 @@ const agents = {
   'healthcare': [
     {
       slug: 'appointment-booking',
-      name: 'Appointment Booking Agent',
-      icon: Calendar,
-      role: 'Collects required patient information and streamlines doctor appointment bookings with seamless calendar integration.',
-      isLive: true,
-      isRealTime: true
-    },
-    {
-      slug: 'follow-up',
-      name: 'Follow Up Agent',
-      icon: HeartPulse,
-      role: 'Conducts post-treatment check-ins with patients to ensure recovery is on track and addresses any immediate concerns.',
+      name: 'Meghana – Patient Care Coordinator',
+      icon: Stethoscope,
+      role: 'Coordinates appointments and department matching for visitors at multispecialty hospitals.',
       isLive: true,
       isRealTime: true
     },
@@ -61,9 +53,9 @@ const agents = {
   'edtech': [
     {
       slug: 'lead-qualification',
-      name: 'Lead Qualification Agent',
+      name: 'Sonali – EdTech Lead Qualifier',
       icon: Calendar,
-      role: 'Engages with prospective students to understand learning goals, budget, and preferences to recommend the perfect course fit.',
+      role: 'Engages prospective students to assess academic backgrounds and program preferences for the Medha PGDM.',
       isLive: true,
       isRealTime: true
     },
@@ -71,45 +63,45 @@ const agents = {
   'bfsi': [
     {
       slug: 'payment-follow-ups',
-      name: 'Payment Follow-ups Agent',
+      name: 'Vedika – Credit Collections Officer',
       icon: Shield,
-      role: 'Gently follows up with customers to recover loan amounts or pending payment dues with a professional and respectful tone.',
+      role: 'Manages credit card payment reminders and assists customers with outstanding balance repayments.',
       isLive: true,
       isRealTime: true
     },
     {
       slug: 'insurance-claim',
-      name: 'Insurance Claim Assistant',
+      name: 'Mahesh – Insurance Claims Specialist',
       icon: Shield,
-      role: 'Assists customers in initiating claims or providing additional required information to expedite the settlement process.',
-      isLive: false,
+      role: 'Assists policyholders through the complexities of insurance claims and hospital network inquiries.',
+      isLive: true,
       isRealTime: true
     },
   ],
   'hospitality': [
     {
       slug: 'restaurant-front-desk',
-      name: 'Restaurant Front Desk Agent',
+      name: 'Monisha – Restaurant Receptionist',
       icon: Utensils,
-      role: 'Answers queries related to reservations, timings, online orders, and handles adhoc enquiries during peak hours.',
+      role: 'Handles front-desk tasks, including table reservations and general inquiries for Medha Restaurant.',
       isLive: true,
       isRealTime: true
     },
     {
-      slug: 'airlines-booking',
-      name: 'Airlines Booking Support',
-      icon: ShoppingBag,
-      role: 'Provides guided information to book a flight or updates customers on their current booking details with zero latency.',
-      isLive: false,
+      slug: 'hotel-survey',
+      name: 'Disha – Hospitality Survey Agent',
+      icon: Utensils,
+      role: 'Conducts post-stay surveys to collect guest feedback on service quality and overall experience.',
+      isLive: true,
       isRealTime: true
     },
   ],
   'real-estate': [
     {
       slug: 'lead-qualification',
-      name: 'Lead Qualification Agent (Vikas)',
+      name: 'Varun – Real Estate Sales Lead',
       icon: Building2,
-      role: 'Our loyal, enthusiastic sales expert. Vikas knows every property, remembers your preferences, and helps you find your home.',
+      role: 'Proactively qualifies leads for premium properties by gathering BHK and budget requirements.',
       isLive: true,
       isRealTime: true
     },
@@ -152,7 +144,7 @@ export function AgentTabs() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Our Voice Agents</h2>
           <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
-            Meet the digital employees who handle your calls with zero latency and 100% personality.
+            Meet the digital employees who handle your calls with sub optimal 500ms latency and 100% personality.
           </p>
         </div>
 
@@ -267,9 +259,9 @@ export function AgentTabs() {
                           ))}
                         </div>
                         <span className="animate-pulse">
-                          {realTime.status === 'connecting' ? 'Establishing link...' : 
-                           realTime.status === 'not-found' ? 'Error 404: Agent Configuration Not Found' :
-                           'Listening...'}
+                          {realTime.status === 'connecting' ? 'Establishing link...' :
+                            realTime.status === 'not-found' ? 'Error 404: Agent Configuration Not Found' :
+                              'Listening...'}
                         </span>
                       </div>
                       {realTime.status === 'not-found' && (

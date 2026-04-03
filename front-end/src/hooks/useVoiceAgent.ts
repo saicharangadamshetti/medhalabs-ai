@@ -65,9 +65,8 @@ export function useVoiceAgent() {
             source.connect(audioContext.current.destination);
 
             if (nextPlayTime.current < audioContext.current.currentTime) {
-                nextPlayTime.current = audioContext.current.currentTime;
+                nextPlayTime.current = audioContext.current.currentTime + 0.1; // 100ms jitter buffer
             }
-
 
             source.start(nextPlayTime.current);
             nextPlayTime.current += buffer.duration;
@@ -105,6 +104,8 @@ export function useVoiceAgent() {
                 processor.current.onaudioprocess = (e) => {
                     if (!ws.current || ws.current.readyState !== WebSocket.OPEN) return;
                     const channelData = e.inputBuffer.getChannelData(0);
+
+                    // Process audio for streaming
                     const buffer = new ArrayBuffer(channelData.length * 2);
                     const view = new DataView(buffer);
 

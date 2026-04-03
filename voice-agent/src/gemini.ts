@@ -7,6 +7,9 @@ import { geminiTools, executeTool } from './tools';
  * Generic handler for Gemini Live connections with different agent personalities.
  */
 export const handleGenericAgent = async (ws: WebSocket, domainId: string, agentId: string) => {
+
+  const startTime = Date.now();
+
   const config = getAgentConfig(domainId, agentId);
 
   if (!config) {
@@ -18,8 +21,7 @@ export const handleGenericAgent = async (ws: WebSocket, domainId: string, agentI
   const { prompt: systemInstruction, useTools } = config;
   const toolsConfig = useTools ? [{ functionDeclarations: geminiTools as any }] : undefined;
 
-  const startTime = Date.now();
-  console.log(`[Gemini SDK] [0ms] Agent Session Starting for: ${domainId}/${agentId} (Tools: ${useTools})...`);
+  console.log(`[Gemini SDK] [+${Date.now() - startTime}ms] Agent Session Starting for: ${domainId}/${agentId} (Tools: ${useTools})...`);
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   if (!GEMINI_API_KEY) {
@@ -52,17 +54,19 @@ export const handleGenericAgent = async (ws: WebSocket, domainId: string, agentI
         onmessage: async (message: any) => {
           // Debugging transcripts: Check multiple paths as the SDK delivery varies by model version
           const inputTranscript = message.serverContent?.inputTranscription?.text;
-          if (inputTranscript) console.log(`\x1b[32m[User Transcript]:\x1b[0m ${inputTranscript}`);
+          if (inputTranscript) console.log(`\x1b[32m[User Transcript]:\x1b[0m [+${Date.now() - startTime}ms] ${inputTranscript}`);
 
           const outputTranscript = message.outputTranscription?.text;
-          if (outputTranscript) console.log(`\x1b[34m[Model Transcript]:\x1b[0m ${outputTranscript}`);
+          if (outputTranscript) console.log(`\x1b[34m[Model Transcript]:\x1b[0m [+${Date.now() - startTime}ms] ${outputTranscript}`);
 
           const modelTurn = message.serverContent?.modelTurn;
           if (modelTurn?.parts) {
             for (const part of modelTurn.parts) {
-              if (part.text) console.log(`\x1b[34m[Model Part]:\x1b[0m ${part.text}`);
+              if (part.text) console.log(`\x1b[34m[Model Part]:\x1b[0m [+${Date.now() - startTime}ms] ${part.text}`);
               if (part.inlineData?.data) {
-                ws.send(JSON.stringify({ type: 'audio', audio: part.inlineData.data }));
+                if (ws.readyState === WebSocket.OPEN) {
+                  ws.send(JSON.stringify({ type: 'audio', audio: part.inlineData.data }));
+                }
               }
             }
           }
@@ -108,6 +112,7 @@ export const handleGenericAgent = async (ws: WebSocket, domainId: string, agentI
     try {
       if (!session) return;
       const clientMsg = JSON.parse(data.toString());
+
       if (clientMsg.type === 'audio' && clientMsg.audio) {
         session.sendRealtimeInput({
           audio: {

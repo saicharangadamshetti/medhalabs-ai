@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 import { handleGenericAgent } from './gemini';
+import { twilioRouter } from './twilio';
+import { handleTwilioStream } from './twilio-stream';
 
 dotenv.config();
 
@@ -14,6 +16,9 @@ const serveStatic = express.static(path.join(process.cwd(), 'public'));
 
 // Serve static files for the local testing UI
 app.use(serveStatic);
+
+// Twilio API routes for Webhooks and Triggering Outbound calls
+app.use('/twilio', twilioRouter);
 
 const server = http.createServer(app);
 
@@ -49,6 +54,8 @@ wss.on('connection', (ws, req) => {
     const domainId = parts[1];
     const agentId = parts[2];
     handleGenericAgent(ws, domainId, agentId);
+  } else if (url === '/media-stream') {
+    handleTwilioStream(ws);
   } else {
     console.warn(`[WS] Unknown path or missing parameters: ${url}`);
     ws.close(4404, 'Path Not Found');
@@ -59,4 +66,6 @@ server.listen(port, () => {
   console.log(`Voice Agent testing server running on http://localhost:${port}`);
   console.log('Available WebSocket endpoints:');
   console.log(` - ws://localhost:${port}/agent/:domainId/:agentId`);
+  console.log(` - ws://localhost:${port}/media-stream (Twilio)`);
+  console.log(` - POST http://localhost:${port}/twilio/voice (Twilio TwiML Webhook)`);
 });
