@@ -13,31 +13,31 @@ import { SYSTEM_INSTRUCTION as realEstateLeadQualification } from './real-estate
 export interface AgentConfig {
   prompt: string;
   useTools: boolean;
+  voiceId: string;
 }
 
 export const AGENT_CONFIG: Record<string, Record<string, AgentConfig>> = {
   'ecommerce': {
-    'service-request': { prompt: ecommerceServiceRequest, useTools: false },
-    'customer-support': { prompt: ecommerceCustomerSupport, useTools: false },
-    'cart-reminder': { prompt: ecommerceCartReminder, useTools: false },
+    'service-request': { prompt: ecommerceServiceRequest, useTools: false, voiceId: 'Aoede' },
+    'customer-support': { prompt: ecommerceCustomerSupport, useTools: false, voiceId: 'Aoede' },
+    'cart-reminder': { prompt: ecommerceCartReminder, useTools: false, voiceId: 'Puck' },
   },
   'healthcare': {
-    'appointment-booking': { prompt: healthcareAppointmentBooking, useTools: false },
-
+    'appointment-booking': { prompt: healthcareAppointmentBooking, useTools: false, voiceId: 'Aoede' },
   },
   'edtech': {
-    'lead-qualification': { prompt: edtechLeadQualification, useTools: false },
+    'lead-qualification': { prompt: edtechLeadQualification, useTools: false, voiceId: 'Aoede' },
   },
   'bfsi': {
-    'payment-follow-ups': { prompt: bfsiPaymentFollowUps, useTools: false },
-    'insurance-claim': { prompt: bfsiInsuranceClaim, useTools: false },
+    'payment-follow-ups': { prompt: bfsiPaymentFollowUps, useTools: false, voiceId: 'Aoede' },
+    'insurance-claim': { prompt: bfsiInsuranceClaim, useTools: false, voiceId: 'Puck' },
   },
   'hospitality': {
-    'restaurant-front-desk': { prompt: hospitalityRestaurantFrontDesk, useTools: false },
-    'hotel-survey': { prompt: hospitalityHotelSurvey, useTools: false },
+    'restaurant-front-desk': { prompt: hospitalityRestaurantFrontDesk, useTools: false, voiceId: 'Aoede' },
+    'hotel-survey': { prompt: hospitalityHotelSurvey, useTools: false, voiceId: 'Aoede' },
   },
   'real-estate': {
-    'lead-qualification': { prompt: realEstateLeadQualification, useTools: true },
+    'lead-qualification': { prompt: realEstateLeadQualification, useTools: true, voiceId: 'Puck' },
   },
 };
 

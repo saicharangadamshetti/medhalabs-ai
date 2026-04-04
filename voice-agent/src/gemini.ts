@@ -22,10 +22,10 @@ export const handleGenericAgent = async (ws: WebSocket, domainId: string, agentI
     return;
   }
 
-  const { prompt: systemInstruction, useTools } = config;
+  const { prompt: systemInstruction, useTools, voiceId } = config;
   const toolsConfig = useTools ? [{ functionDeclarations: geminiTools as any }] : undefined;
 
-  console.log(`[Gemini SDK] [+${Date.now() - startTime}ms] Agent Session Starting for: ${domainId}/${agentId} (Tools: ${useTools})...`);
+  console.log(`[Gemini SDK] [+${Date.now() - startTime}ms] Agent Session Starting for: ${domainId}/${agentId} (Voice: ${voiceId}, Tools: ${useTools})...`);
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   if (!GEMINI_API_KEY) {
@@ -46,6 +46,15 @@ export const handleGenericAgent = async (ws: WebSocket, domainId: string, agentI
     session = await ai.live.connect({
       model: modelName,
       config: {
+        // generationConfig: {
+        //   speechConfig: {
+        //     voiceConfig: {
+        //       prebuiltVoiceConfig: {
+        //         voiceName: voiceId
+        //       }
+        //     }
+        //   }
+        // },
         responseModalities: [Modality.AUDIO],
         systemInstruction: systemInstruction || "You are a helpful assistant.",
         tools: toolsConfig,

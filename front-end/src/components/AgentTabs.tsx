@@ -206,13 +206,7 @@ export function AgentTabs() {
                   </p>
 
                   <div className="space-y-3">
-                    {/* Voice Sample Button - Always visible */}
-                    <button
-                      className="w-full bg-emerald-50/50 hover:bg-emerald-50 text-emerald-900 py-3.5 rounded-full flex items-center justify-center gap-2 font-bold transition-all text-sm active:scale-95 border border-emerald-100/50"
-                    >
-                      <Play className="w-4 h-4 fill-current" />
-                      Hear Voice Sample
-                    </button>
+
 
                     {/* Talk to Agent Button - Primary action */}
                     <button

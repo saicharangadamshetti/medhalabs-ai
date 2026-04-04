@@ -40,15 +40,24 @@ export const handleTwilioStream = (ws: WebSocket) => {
           return;
         }
 
-        const { prompt: systemInstruction, useTools } = config;
+        const { prompt: systemInstruction, useTools, voiceId } = config;
         const toolsConfig = useTools ? [{ functionDeclarations: geminiTools as any }] : undefined;
 
-        console.log(`[TwilioStream] Stream started: ${streamSid} (${domainId}/${agentId})`);
+        console.log(`[TwilioStream] Stream started: ${streamSid} (${domainId}/${agentId}) using voice: ${voiceId}`);
 
         // Connect Gemini
         session = await ai.live.connect({
           model: "gemini-3.1-flash-live-preview",
           config: {
+            // generationConfig: {
+            //   speechConfig: {
+            //     voiceConfig: {
+            //       prebuiltVoiceConfig: {
+            //         voiceName: voiceId
+            //       }
+            //     }
+            //   }
+            // },
             responseModalities: [Modality.AUDIO],
             systemInstruction: systemInstruction || "You are a helpful assistant.",
             tools: toolsConfig,
