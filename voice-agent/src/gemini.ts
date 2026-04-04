@@ -3,6 +3,10 @@ import { GoogleGenAI, Modality } from '@google/genai';
 import { getAgentConfig } from './prompts/index';
 import { geminiTools, executeTool } from './tools';
 
+// Pre-computed base64 encoded raw 16kHz 16-bit Mono PCM audio
+import { greetingBase64 } from "./assets/greetingBase64";
+
+
 /**
  * Generic handler for Gemini Live connections with different agent personalities.
  */
@@ -42,14 +46,38 @@ export const handleGenericAgent = async (ws: WebSocket, domainId: string, agentI
     session = await ai.live.connect({
       model: modelName,
       config: {
-        // REVERT: Most stable configuration for Live 3.1
         responseModalities: [Modality.AUDIO],
         systemInstruction: systemInstruction || "You are a helpful assistant.",
         tools: toolsConfig,
+        // VAD tuning: respond quickly after user stops speaking (even single words)
+        realtimeInputConfig: {
+          automaticActivityDetection: {
+            // HIGH sensitivity = model detects end-of-speech sooner
+            endOfSpeechSensitivity: 'END_SENSITIVITY_HIGH' as any,
+            // 400ms of silence = user finished speaking (default is ~8-10s for single words)
+            silenceDurationMs: 400,
+          }
+        },
       },
       callbacks: {
         onopen: () => {
           console.log(`[Gemini SDK] [+${Date.now() - startTime}ms] SDK Handshake successful. Live context established.`);
+
+          // --- COLD START TRICK ---
+          // Send a minimal "seed" message to trigger the model's initialization.
+          // This reduces the 'Time to First Token' when the user finally speaks.
+          setTimeout(() => {
+            if (session) {
+              console.log(`[Gemini SDK] Sending cold-start warm-up...`);
+              session.sendRealtimeInput({
+                audio: {
+                  data: greetingBase64,
+                  mimeType: "audio/pcm;rate=16000"
+                }
+              });
+              console.log(`[Gemini SDK] Intro sent as audio priming.`);
+            }
+          }, 100);
         },
         onmessage: async (message: any) => {
           // Debugging transcripts: Check multiple paths as the SDK delivery varies by model version

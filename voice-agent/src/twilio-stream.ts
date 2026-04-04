@@ -4,6 +4,9 @@ import { getAgentConfig } from './prompts/index';
 import { geminiTools, executeTool } from './tools';
 import { WaveFile } from 'wavefile';
 
+// Pre-computed base64 encoded raw 16kHz 16-bit Mono PCM audio
+import { greetingBase64 } from "./assets/greetingBase64";
+
 export const handleTwilioStream = (ws: WebSocket) => {
   let streamSid: string | null = null;
   let session: any = null;
@@ -24,7 +27,7 @@ export const handleTwilioStream = (ws: WebSocket) => {
 
       if (msg.event === 'start') {
         streamSid = msg.start.streamSid;
-        
+
         // Extract parameters passed from TwiML
         const params = msg.start.customParameters || {};
         domainId = params.domainId || domainId;
@@ -53,6 +56,22 @@ export const handleTwilioStream = (ws: WebSocket) => {
           callbacks: {
             onopen: () => {
               console.log(`[Twilio->Gemini] Session open.`);
+
+              // --- COLD START TRICK ---
+              // Send a minimal "seed" message to trigger the model's initialization.
+              // This reduces the 'Time to First Token' when the user finally speaks.
+              setTimeout(() => {
+                if (session) {
+                  console.log(`[Gemini SDK] Sending cold-start warm-up...`);
+                  session.sendRealtimeInput({
+                    audio: {
+                      data: greetingBase64,
+                      mimeType: "audio/pcm;rate=16000"
+                    }
+                  });
+                  console.log(`[Gemini SDK] Intro sent as audio priming.`);
+                }
+              }, 100);
             },
             onmessage: async (geminiMsg: any) => {
               const modelTurn = geminiMsg.serverContent?.modelTurn;
@@ -62,18 +81,18 @@ export const handleTwilioStream = (ws: WebSocket) => {
                   if (part.text) {
                     console.log(`\x1b[34m[Twilio Agent Part]:\x1b[0m ${part.text}`);
                   }
-                  
+
                   // Audio processing (Gemini 24kHz PCM -> Twilio 8kHz MuLaw)
                   if (part.inlineData?.data) {
                     if (ws.readyState === WebSocket.OPEN && streamSid) {
                       const b = Buffer.from(part.inlineData.data, 'base64');
                       const pcm24Data = new Int16Array(b.buffer, b.byteOffset, b.length / 2);
-                      
+
                       const wavOut = new WaveFile();
-                      wavOut.fromScratch(1, 24000, '16', pcm24Data); 
+                      wavOut.fromScratch(1, 24000, '16', pcm24Data);
                       wavOut.toSampleRate(8000);
                       wavOut.toMuLaw();
-                      
+
                       const mulawOut = Buffer.from((wavOut.data as any).samples as Uint8Array).toString('base64');
                       ws.send(JSON.stringify({
                         event: 'media',
@@ -99,7 +118,7 @@ export const handleTwilioStream = (ws: WebSocket) => {
                 );
                 session.sendToolResponse({ functionResponses });
               }
-              
+
               if (geminiMsg.error) {
                 console.error(`[Twilio->Gemini] Error:`, JSON.stringify(geminiMsg.error, null, 2));
               }
@@ -110,16 +129,16 @@ export const handleTwilioStream = (ws: WebSocket) => {
         });
       } else if (msg.event === 'media' && msg.media?.payload) {
         if (!session) return; // Wait until Gemini is connected
-        
+
         // Twilio 8kHz MuLaw -> Gemini 16kHz PCM
         const mulawBuf = Buffer.from(msg.media.payload, 'base64');
         const wav = new WaveFile();
         wav.fromScratch(1, 8000, '8m', mulawBuf);
         wav.fromMuLaw();
         wav.toSampleRate(16000);
-        
+
         const pcmBuf = wav.toBuffer().slice(44);
-        
+
         session.sendRealtimeInput({
           audio: {
             mimeType: "audio/pcm;rate=16000",
